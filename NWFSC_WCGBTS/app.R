@@ -22,6 +22,13 @@ dat$DatStr<-substr(dat$Date,0,5)
 dat$Date<-as.Date(dat$Date,format="%m/%d/%Y")
 dat$yday<-as.POSIXlt(dat$Date)$yday
 
+JS<-read.csv("https://raw.githubusercontent.com/dylangomes/ShinyApp/master/NWFSC_WCGBTS/Oceanographic%20Trawl%20Data%20-%20Ocean%20Trawl%20Catch%20Data%20Data.csv")
+names(JS)
+JS<-JS[,c(1,2,7,8,11:15)]
+head(JS)
+JS<-JS[which(!duplicated(JS)),]
+JS$DatStr<-substr(as.character(JS$Sample.Date.Local),6,10)
+JS$yday<-as.POSIXlt(JS$Sample.Date.Local, format="%Y-%m-%d")$yday
 
 # Define UI for application that draws a histogram
 ui <- fluidPage(
@@ -48,7 +55,10 @@ ui <- fluidPage(
                selectInput("species",
                            "species:",
                            c(unique(dat$Common_name)))
-        )),
+        ),
+        checkboxInput("check", "JSOES always on", value = T, width = NULL)
+        
+        ),
 
         # Show a plot of the generated distribution
         mainPanel(
@@ -62,6 +72,8 @@ server <- function(input, output) {
 
     output$distPlot <- renderPlot({
 
+        
+        
         ## define species of interest
         name<-input$species
         dat2<-dat[dat$Common_name==name,]
@@ -74,6 +86,9 @@ server <- function(input, output) {
         min=input$daterange[1]
         max=input$daterange[2]
         days<-seq(from=min,to=max,by=1)
+        
+        ## JSOES data all or by date
+        if(input$check==T){JSdat<-JS}else{JSdat<-JS[JS$yday%in%days,]}
         
         ## turn on later (classic look)
         # world <- ne_countries(scale = "medium", returnclass = "sf")
@@ -108,7 +123,13 @@ server <- function(input, output) {
                size=expression("Count per km"^2))+
           theme(
             legend.position="bottom"
-          )
+          )+
+            geom_segment(aes(
+                xend = Start.Longitude.Decimal.Degrees.West,
+                yend = Start.Latitude.Decimal.Degrees.North,
+                x = End.Longitude.Decimal.Degrees.West,
+                y = End.Latitude.Decimal.Degrees.North
+            ),size=2,color="cyan",data=JSdat)
         
         
         }, height = 650, width = 750)

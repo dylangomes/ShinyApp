@@ -5,9 +5,9 @@ account: dgomes
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 4037167
-bundleId: 4523679
+bundleId: 4526130
 url: https://dgomes.shinyapps.io/NWFSC_WCGBTS/
-when: 1619503198.02477
-lastSyncTime: 1619503198.02477
+when: 1619543481.65618
+lastSyncTime: 1619543481.65618
 asMultiple: FALSE
 asStatic: FALSE
