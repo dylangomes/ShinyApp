@@ -16,13 +16,16 @@ library("rnaturalearth")
 library("rnaturalearthdata")
 library(shiny)
 
-dat<-read.csv("https://raw.githubusercontent.com/dylangomes/ShinyApp/master/NWFSC_WCGBTS/FullDataInput.csv")
+dat1<-read.csv("https://raw.githubusercontent.com/dylangomes/ShinyApp_WCGBTS/master/NWFSC_WCGBTS/DataInput_a.csv")
+dat2<-read.csv("https://raw.githubusercontent.com/dylangomes/ShinyApp_WCGBTS/master/NWFSC_WCGBTS/DataInput_b.csv")
+dat3<-read.csv("https://raw.githubusercontent.com/dylangomes/ShinyApp_WCGBTS/master/NWFSC_WCGBTS/DataInput_c.csv")
+dat<-rbind(dat1,dat2,dat3)
 dat$Date<-sub("(..)$","20\\1",dat$Date) ## fill in date information
 dat$DatStr<-substr(dat$Date,0,5)
 dat$Date<-as.Date(dat$Date,format="%m/%d/%Y")
 dat$yday<-as.POSIXlt(dat$Date)$yday
 
-JS<-read.csv("https://raw.githubusercontent.com/dylangomes/ShinyApp/master/NWFSC_WCGBTS/Oceanographic%20Trawl%20Data%20-%20Ocean%20Trawl%20Catch%20Data%20Data.csv")
+JS<-read.csv("https://raw.githubusercontent.com/dylangomes/ShinyApp_WCGBTS/master/NWFSC_WCGBTS/Oceanographic%20Trawl%20Data%20-%20Ocean%20Trawl%20Catch%20Data%20Data.csv")
 names(JS)
 JS<-JS[,c(1,2,7,8,11:15)]
 head(JS)
@@ -56,7 +59,7 @@ ui <- fluidPage(
                            "species:",
                            c(unique(dat$Common_name)))
         ),
-        checkboxInput("check", "JSOES always on", value = T, width = NULL)
+        checkboxInput("check", "JSOES always on", value = F, width = NULL)
         
         ),
 
